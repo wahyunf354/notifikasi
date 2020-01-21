@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Notifikasi API</title>
+</head>
+
+<body>
+  <h1>Notifikasi API</h1>
+
+  <button onclick="snowNotifikasiSederhana()">Notifikasi Sederhana dan Title dan Body</button>
+
+  <script>
+    // Periksa service worker
+    if (!("serviceWorker" in navigator)) {
+      console.log("Service worker tidak didukung browser")
+    } else {
+      registrasiServiceWorker();
+    }
+
+    // Register service worker
+    function registrasiServiceWorker() {
+      return navigator.serviceWorker.register("service-worker.js")
+        .then((registration) => {
+          console.log("Service Worker Berhasi; di register");
+        })
+        .catch((err) => {
+          console.log("Service Worker GAGAL di regis : ", err);
+        });
+    }
+
+    //Periksa fitur Notifikasi API
+    if ("Notification" in window) {
+      requestPermission();
+    } else {
+      console.error(" Berwser tidak mendukung notifikasi.");
+    }
+
+    // Meminta ijin mengunakan notification API
+    function requestPermission() {
+      Notification.requestPermission()
+        .then((result) => {
+          if (result === "denied") {
+            console.log("Fitur Notification tidak di ijinkan");
+            return;
+          } else if (result === "default") {
+            console.error("Penguna menutup kotak dialog permintaan ijin");
+            return;
+          }
+          console.log("Fitur Notification diijinkan");
+        })
+    }
+
+    // Menampikan Notifikasi Sedarhana
+    function snowNotifikasiSederhana() {
+      // notifikasi pertama
+      const title = "Notifikasi Bro";
+      const options = {
+        'body': "Ini Adalah Notifikasi Sederhana.\ncoba Pake garis baru",
+        'icon': '/img/logo.png', //Menampilkan Logo pada Notifikasi
+        'badge': '/img/logo.png',
+        'action': [{
+            'action': 'yes-action',
+            'title': 'Ya',
+          },
+          {
+            'action': 'no-action',
+            'title': 'Tidak',
+          }
+        ],
+        requireInteraction: true,
+        'tag': '02',
+      }
+
+      // notifikasi ke dua
+      const title1 = "Notifikasi Bro";
+      const options1 = {
+        'body': "Ini Adalah Notifikasi Sederhana.\ncoba Pake garis baru",
+        'icon': '/img/logo.png', //Menampilkan Logo pada Notifikasi
+        'badge': '/img/logo.png',
+        'action': [{
+            'action': 'yes-action',
+            'title': 'Ya',
+          },
+          {
+            'action': 'no-action',
+            'title': 'Tidak',
+          }
+        ],
+        'requireInteraction': true,
+        'tag': '01',
+        'renotify': true,
+      }
+      if (Notification.permission === "granted") {
+        navigator.serviceWorker.ready.then(function (registration) {
+          registration.snowNotifikasiSederhana(title, options);
+          registration.snowNotifikasiSederhana(title1, options1);
+        });
+      } else {
+        console.error("Fitur Tidak Diijinkan");
+      }
+    }
+
+    // //Menampilkan notifikasi yang mengharuskan pengguna berinteraksi
+    // function snowNotifikasiRequereInteraction() {
+    //   const title = " Notifikasi yang memerlukan interaksi pengguan";
+    //   const options = {
+    //     requireInteraction: true,
+    //   }
+    //   if (Notification.permission === "granted") {
+    //     navigator.serviceWorker.ready.then(function (registration) {
+    //       registration.snowNotifikasiSederhana(title, options);
+    //     });
+    //   } else {
+    //     console.error("Fitur Tidak Diijinkan");
+    //   }
+    // }
+  </script>
+</body>
+
+</html>
